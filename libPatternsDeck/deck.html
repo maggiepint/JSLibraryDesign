@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>JS Library Design</title>
+    <meta charset="utf-8">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+        @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+        @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+        body {
+            font-family: 'Droid Serif';
+        }
+        
+        h1,
+        h2,
+        h3 {
+            font-family: 'Yanone Kaffeesatz';
+            font-weight: normal;
+        }
+        
+        .remark-code,
+        .remark-inline-code {
+            font-family: 'Ubuntu Mono';
+        }
+        .remark-code { font-size: 20px; }
+        blockquote {
+            border-left: 0.3em solid rgba(0, 0, 0, 0.5);
+            padding: 0 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+<textarea id="source">
+
+class: center, middle
+
+# Sharing is Caring!
+
+<img src='./DaltonAndersPlaying.jpg' style="width:700px"></img>
+
+Patterns for JavaScript Library Design
+
+@maggiepint
+
+---
+# Who am I?
+
+--
++ Semicolons/Spaces Convert
+
+---
+# Who am I?
+
++ Engineering Manager in Azure SRE
++ A maintainer (not the author) of Moment.js
++ JS Foundation Representative to TC39
++ Champion of Date rework in JavaScript (tell me your thoughts!)
+
+Twitter: @maggiepint
+
+Email: maggiepint@gmail.com
+
+---
+class: center, middle
+
+A library is a bit of code that is useful when packaged up and distributed to other people. 
+
+This could be internal or external.
+
+---
+# Libraries
+1. LoDash
+2. jQuery
+3. Q 
+4. Moment
+5. Immutable
+6. Request
+
+# Not Libraries
+1. Express
+2. Angular
+3. Webpack
+
+
+---
+class: center, middle
+
+# What we think having a library is like
+
+<img src='./DaltonAndersPlaying.jpg' style="width:700px"></img>
+
+---
+# What having a library is actually like
+<img src='./WhippedCreamGame.jpg' style="width:700px"></img>
+
+---
+<img src='./WhippedCreamFace.jpg' style="width:700px"></img>
+
+---
+<img src='./GHIssues.png' style="width:700px"></img>
+
+---
+name: good-library
+
+# What makes a library good?
+
+---
+template: good-library
+name: good-library-1
+
+- Small Size!
+
+---
+template: good-library
+name: good-library-2
+
+- ~~Small Size!~~
+
+
+---
+template: good-library-2
+
+- Great Code!
+
+---
+name: good-library-3
+template: good-library-2
+
+- ~~Great Code!~~
+
+---
+template: good-library-3
+- Encourages functional programming practices
+
+---
+template: good-library-3
+name: good-library-4
+- ~~Encourages functional programming practices~~
+
+---
+template: good-library-4
+- Amazing nodejs/webpack/babel/mocha/chai/phantom/sauce/istanbul toolchain!
+
+---
+template: good-library-4
+name: good-library-5
+- ~~Amazing nodejs/webpack/babel/mocha/chai/phantom/sauce/istanbul toolchain!~~
+
+---
+template: good-library-5
+- Ease of use
+
+---
+class: middle, center
+# Ease of Use!
+
+---
+class: center, middle
+# Nobody wants to learn your library.
+
+---
+class: center, middle
+# It's okay to make it simple.
+
+---
+# Considerations
+
+1. Invocation
+2. Configuration
+3. Defaults
+4. Errors
+
+---
+class: middle, center
+# Invocation
+
+---
+# Static Invocation
+
+(Simplest Option)
+
+```js
+// request
+request('http://www.google.com', (err, resp, body) => {
+});
+```
+```js
+// lodash
+let odds = _.filter([1,2,3,4,5], (n) => { return n % 2});
+```
+---
+The drawback:
+
+```js
+let arr = [1,2,3,4,5];
+let sumOddsDoubled = _sum(
+                            _.map(
+                                _.filter(arr, (n) => { return n % 2})
+                                    , (n) => {return n *2 }));
+```
+
+---
+# Factory Function
+
+(Extends well)
+
+```js
+// Q
+let promise = Q.fcall();
+let promise = Q.all();
+let deferred = Q.defer();
+
+// jQuery
+let obj = $('.blue');
+
+//moment
+let myTime = moment();
+let myTime = moment.utc();
+```
+
+---
+class: middle
+# Chaining
+
+(AKA Fluent)
+
+```js
+Q.fcall(promisedStep1)
+.then(promisedStep2)
+.then(promisedStep3)
+.then(promisedStep4)
+.then(function (value4) {
+    // Do something with value4
+})
+.catch(function (error) {
+    // Handle any error from all above steps
+})
+.done();
+```
+---
+class: middle
+```js
+moment().add(3, 'days').startOf('day').subtract(1, 'year');
+```
+---
+class: middle
+```js
+$('.blue').append('<p>these elements have a blue class</p>')
+    .class('emphasize);
+```
+
+---
+class: middle, center
+# Configuration
+---
+
+First there was:
+
+```js
+let dateString = 'May 1, 2017';
+moment(dateString);
+moment(dateString, 'MMM D, YYYY');
+```
+--
+And then there was:
+
+```js
+moment([2017,2,11]);
+moment(moment());
+moment(new Date());
+moment(dateString, 'MMM D, YYYY', 'en');
+moment(dateString, 'MMM D, YYYY', true);
+moment(dateString, 'MMM D, YYYY', 'en', true);
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD']);
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD'],'en');
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD'], true);
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD'],'en', true);
+```
+
+---
+# Options Objects
+
+(The ECMA402 Intl API)
+```js
+let options = {
+  hour: 'numeric', 
+  minute: 'numeric', 
+  second: 'numeric',
+  timeZoneName: 'short'
+};
+
+let dateString = new Intl.DateTimeFormat('en-AU', options).format(date);
+```
+
+---
+# Options allow for pluggable business logic
+```js
+let options = {
+  statusCode: {
+    404: function() {
+      alert( "page not found" );
+    },
+    500: function() {
+        throw 'the world has ended';
+    }
+  }
+};
+
+$.ajax(options);
+```
+
+---
+class: center, middle
+# Required paramaters first, then an options object
+---
+class: center, middle
+# Defaults
+---
+class: middle
+# Plain HTTP Request with Node.JS
+```js
+let http = require('http');
+http.get({
+        host: 'api.github.com',
+        path: '/repos/timrwood/moment',
+        headers: {
+    'User-Agent': 'request'
+  }
+    }, function(response) {
+        // Continuously update stream with data
+        let body = '';
+        response.on('data', function(d) {
+            body += d;
+        });
+        response.on('end', function() {
+*             console.log(response.statusCode); // 301
+*             console.log(response.statusMessage); // Moved Permanently
+        });
+    });
+```
+---
+class: middle
+
+# Sensible Defaults with Request
+```js
+let request = require('request');
+
+let options = {
+  url: 'https://api.github.com/repos/timrwood/moment',
+  headers: {
+    'User-Agent': 'request'
+  }
+};
+request(options, (err, resp, body) => {
+    console.log(resp.request.uri.href); 
+    // https://api.github.com/repositories/1424470
+    console.log(resp.body); 
+    // {"id":1424470,"name":"moment","full_name":"moment/moment", ...
+});
+```
+---
+class: middle, center
+# Best By Default
+
+If there is an obvious right answer, do it automatically.
+---
+class: middle
+```js
+let dateTimeString = '2017-05-01 10:25:41.357-05:00';
+moment(dateTimeString).format('LLL');
+```
+## 1 May 2017 17:25
+
+---
+class: center, middle
+
+# WAT?
+
+---
+class: middle
+```js
+let dateTimeString = '2017-05-01 10:25:41.357-05:00';
+moment(dateTimeString).format('LLL'); 
+// 1 May 2017 17:25
+moment.utc(dateTimeString).format('LLL'); 
+// 1 May 2017 15:25
+moment.parseZone(dateTimeString).format('LLL'); 
+//  1 May 2017 10:25
+moment.tz(dateTimeString, 'America/New_York').format('LLL'); 
+// 1 May 2017 11:25
+```
+---
+class: center, middle
+# There is no best choice!
+---
+class: middle
+```js
+let dateTimeString = '2017-05-01 10:25:41.357-05:00';
+moment.local(dateTimeString).format('LLL');
+```
+## 1 May 2017 17:25
+---
+class: center, middle
+# Deafult When Best
+
+If there are several likely behaviors, don't choose a deafult. It only leads to confusion.
+
+---
+class: center, middle
+# Errors
+---
+class: center, middle
+> Any use of the JavaScript throw mechanism will raise an exception that must be handled using try / catch or the Node.js process will exit immediately.
+
+*The Node.js Docs*
+---
+class: middle
+# <img src='./Myles.jpg' style="width:200px"></img> Myles cares a lot about errors.
+
+---
+class: center, middle
+```js
+moment('asdfgh', 'DD/MM/YYYY').format() // invalid date
+```
+--
+## Good! Bad user input doesn't crash the Node.js process.
+---
+name: error-start
+class: middle
+```js
+moment().get('hours'); // 13
+```
+--
+
+```js
+moment().get('huors'); 
+// Moment {_isAMomentObject: true, _isUTC: false, _pf: ...
+```
+--
+name: error-shrug
+ # ¯\\_(ツ)_/¯
+---
+class: center, middle
+# Throw on Obvious Developer Error
+
+---
+class: middle
+
+```js
+const { Map } = require('immutable');
+const map1 = Map({ a: 1, b: 2, c: 3 });
+const map2 = map1.set('b', 50)
+let b1 = map1.get('b'); //2
+let b2 = map2.get('b')); // 50
+```
+---
+class: middle
+```js
+const { Map } = require('immutable');
+const map3 = Map(1); 
+// TypeError: Expected Array or iterable object of [k, v] entries, 
+// or keyed object: 1
+```
+
+---
+# Make it easy to use!
+
+Invocation
++ Start with basic static or factory invocation
++ Consider a chaining API
+
+Configuration
++ Use options objects for non-required configurations
+
+Defaults
++ Best-by-default
++ Deafult-when-best
+
+Errors
++ Throw for obvious developer errors
+
+---
+# Share!
+<img src="./DaltonAndersWalkingAway.jpg" style="width:700px" />
+
+@maggiepint - maggiepint@gmail.com - https://www.maggiepint.com
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+        var slideshow = remark.create({highlightLines: true, highlightLanguage: 'javascript'});
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+const moment = require('moment');
+let dateString = 'May 1, 2017';
+moment(dateString);
+moment(dateString, 'MMM D, YYYY');
+moment(dateString, 'MMM D, YYYY', 'en');
+moment(dateString, 'MMM D, YYYY', true);
+moment(dateString, 'MMM D, YYYY', 'en', true);
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD']);
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD'],'en');
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD'], true);
+moment(dateString, ['MMM D, YYYY', 'YYYY-MM-DD'],'en', true);
